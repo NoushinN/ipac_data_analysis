@@ -1,0 +1,57 @@
+---
+title: "IPAC event - October 2019"
+output:
+  html_document: default
+  pdf_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(out.height = "\\textheight",  out.width = "\\textwidth",
+                      out.extra = "keepaspectratio=false")
+```
+
+# load libraries
+
+```{r load libraries, echo = FALSE, eval = TRUE, warning = FALSE, results = FALSE, cache = FALSE, comment = FALSE}
+library(tidyverse)
+library(here)
+library(data.table)
+library(readxl)
+```
+
+# load first event table
+
+```{r load data, echo = FALSE, eval = TRUE, warning = FALSE, results = FALSE, cache = FALSE, comment = FALSE, include = FALSE}
+
+ipact_event <- read_excel("NN_registrant_details_report.xlsx")
+```
+
+# visualize
+
+```{r visualize, echo = TRUE, eval = TRUE, warning = FALSE}
+
+# registered individuals
+ipact_event %>%
+  filter(!Company == "NA") %>%
+  group_by(Company) %>%
+  summarise(count = n()) %>%
+  ggplot(aes(x = Company, y = count, fill = Company)) +
+  geom_bar(stat = "identity") +
+  ylab("Total counts") +
+  labs(subtitle = "Registration based on company",
+       title = "Registered Companies") + theme_bw()  
+
+# attended individuals
+ipact_event %>%
+  filter(!Company == "NA") %>%
+  filter(Attendance == "YES") %>%
+  group_by(Company) %>%
+  summarise(count = n()) %>%
+  ggplot(aes(x = Company, y = count, fill = Company)) +
+  geom_bar(stat = "identity") +
+  ylab("Total counts") +
+  labs(subtitle = "Attendance based on company",
+       title = "Attended participants") + theme_bw()  
+
+```
